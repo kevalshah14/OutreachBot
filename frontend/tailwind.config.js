@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./index.html",          // If using Vite or if your HTML is in root
+    "./src/**/*.{js,jsx}",   // If your components are in `./src`
+
   ],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
