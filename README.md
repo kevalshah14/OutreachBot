@@ -1,82 +1,153 @@
-# Step-by-Step Guide to Using test.py
+Collecting workspace information# OutreachBot
 
-This guide will help you run the test.py script to collect investment information about venture capital firms, even if you have no coding experience.
+OutreachBot is a full-stack application for file upload, processing, and generating personalized outreach content. The application consists of a React frontend for file management and a Python backend for data processing and AI-powered content generation.
 
-## Prerequisites
+## Getting Started
 
-Before you begin, make sure you have:
+### 1. Cloning the Repository
 
-1. **Google Chrome**: Ensure you have the latest version installed from [google.com/chrome](https://www.google.com/chrome/)
+```bash
+# Clone the repository
+git clone https://github.com/kevalshah14/OutreachBot
 
-2. **Poetry**: You already have Poetry installed and configured with the necessary dependencies as shown in your pyproject.toml file.
+# Navigate to the project directory
+cd OutreachBot
+```
 
-## Step 1: Set Up Your Input Data
+### 2. Setting Up the Frontend
 
-1. **Create an input file** (if you don't already have one):
-   - Create a new text file named input.csv in the same folder as your script
-   - Open it with any text editor
-   - Add the header and companies you want to research:
-     ```
-     company_name
-     a16z
-     Kaiser Permanente Ventures
-     Sequoia Capital
-     ```
-   - Save the file
+The frontend is built with React and Vite, offering a modern UI for file upload and preview.
 
-## Step 2: Run the Script
+```bash
+# Navigate to the frontend directory
+cd frontend
 
-1. **Open Command Prompt** (Windows) or Terminal (Mac/Linux)
+# Install dependencies
+npm install
 
-2. **Navigate to your project folder**:
-   ```
-   cd /Users/keval/Documents/VSCode/OutreachBot/backend
-   ```
+# Start the development server
+npm run dev
+```
 
-3. **Run the script using Poetry**:
-   ```
-   poetry run python test.py
-   ```
+The frontend will be available at `http://localhost:5173` (or the port specified by Vite).
 
-4. **What happens next**:
-   - The script will open a Chrome browser window
-   - For each company in your input.csv, it will:
-     - Go to Perplexity AI website
-     - Search for investment information
-     - Extract relevant data
-   - The browser will close automatically between searches
-   - This process takes time, so please be patient
+#### Frontend Features
 
-5. **Monitor progress**:
-   - You'll see updates in the terminal
-   - Don't close the browser windows that appear
+- Drag-and-drop file upload interface
+- File preview for various formats (CSV, Excel, PDF, images)
+- Responsive design with Tailwind CSS
+- Smooth animations with Framer Motion
 
-## Step 3: Access the Results
+### 3. Setting Up the Backend
 
-1. When the script completes, an output.csv file will be created in your project folder
+The backend is a Python FastAPI application that processes uploads and generates content.
 
-2. **Open the output file** with Excel, Google Sheets, or any spreadsheet software:
-   - The file contains columns for:
-     - Source company (the VC firm)
-     - Investment company name
-     - CEO name
-     - CEO LinkedIn URL
-     - Average check size
-     - Investment received
-     - Company description
+```bash
+# Navigate to the backend directory
+cd backend
 
-## Troubleshooting
+# Install Poetry if you don't have it
+pip install poetry
 
-- **If the browser closes immediately**: There might be a session issue. Try running the script again.
-- **If the results are incomplete**: The Perplexity AI search might have been interrupted. Try running the script again with just the missing companies.
-- **If you encounter dependency issues**: Run `poetry install` to ensure all dependencies are properly installed.
-- **If Perplexity AI blocks the script**: Wait a few hours before trying again, as they may have rate-limiting measures.
+# Install dependencies
+poetry install
 
-## Notes
+# Create .env file (see Environment Variables section below)
+cp .env.example .env  # Then edit the .env file with your credentials
 
-- The script may take 5-10 minutes per company to complete
-- Sometimes Perplexity AI results may vary or be incomplete
-- The script uses automated web browsing, so don't use your computer for other intensive tasks while it runs
-- If you need more companies researched, simply add them to the input.csv file and run the script again
+# Run the backend server
+poetry run python -m app.main
+```
 
-Happy researching!
+The API will be available at `http://localhost:8000`.
+
+#### Backend Features
+
+- FastAPI for high-performance API endpoints
+- File processing for various formats
+- AI integration for content generation
+- CSV data processing capabilities
+
+### 4. Using test.py
+
+The test.py script uses automated browser interaction to gather investment information from Perplexity AI.
+
+```bash
+# Navigate to the backend directory
+cd backend
+
+# Create an input CSV file if it doesn't exist
+# Format: A header row with "company_name" and company names in rows below
+
+# Run the script
+poetry run python test.py
+```
+
+The script will:
+1. Read company names from input.csv
+2. Open a Chrome browser for each company
+3. Query Perplexity AI for investment information
+4. Save the results to output.csv
+
+#### Requirements for test.py
+
+- Google Chrome must be installed
+- Internet connection required
+- The process can take 5-10 minutes per company
+
+### 5. Environment Variables (.env file)
+
+Create a `.env` file in the backend directory with the following variables:
+
+```
+# API Keys
+GEMINI_API_KEY=your_gemini_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Email Configuration (for SendEmail.py)
+GOOGLE_EMAIL=your_gmail_address
+GOOGLE_EMAIL_PASSWORD=your_app_password
+
+# FastAPI Configuration (optional)
+UVICORN_HOST=127.0.0.1
+UVICORN_PORT=8000
+UVICORN_RELOAD=True
+
+# Base URL (if using a custom API endpoint)
+BASE_URL=https://api.example.com/v1
+```
+
+## Project Structure
+
+```
+.
+├── backend/               # Python FastAPI backend
+│   ├── app/               # Backend application code
+│   │   ├── api/           # API routes
+│   │   ├── models/        # Data models
+│   │   ├── services/      # Business logic
+│   │   └── main.py        # Application entry point
+│   ├── GenerateEmail.py   # Email generation script
+│   ├── sendEmail.py       # Email sending script
+│   ├── test.py            # Investment data collection script
+│   └── pyproject.toml     # Python dependencies
+└── frontend/              # React frontend
+    ├── public/            # Static assets
+    ├── src/               # React components and logic
+    │   ├── App.jsx        # Main application component
+    │   ├── FileInputPage.jsx  # File upload interface
+    │   ├── FileRenderPage.jsx # File preview interface
+    │   └── assets/        # Frontend assets
+    ├── package.json       # Node.js dependencies
+    └── vite.config.js     # Vite configuration
+```
+
+## Technologies Used
+
+- **Frontend**: React, Vite, Tailwind CSS, Framer Motion, XLSX
+- **Backend**: FastAPI, Poetry, Pandas, Google Gemini AI, Selenium
+- **Tools**: Undetected ChromeDriver, OpenAI API
+
+## License
+
+This project is proprietary and not licensed for redistribution or reuse without permission.
