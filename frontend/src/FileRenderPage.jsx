@@ -16,14 +16,13 @@ function FileRenderPage() {
   // Check if we got here with a file
   useEffect(() => {
     if (!location.state?.file) {
-      // If there's no file in route state, go back
       navigate("/");
       return;
     }
     setFile(location.state.file);
   }, [location, navigate]);
 
-  // Once we have the file, determine the preview type
+  // Determine preview type and process file
   useEffect(() => {
     if (!file) return;
 
@@ -47,8 +46,6 @@ function FileRenderPage() {
       name.endsWith(".xls")
     ) {
       setPreviewType("excel");
-
-      // Parse Excel
       const reader = new FileReader();
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
@@ -59,6 +56,24 @@ function FileRenderPage() {
         setSheetData(jsonData);
       };
       reader.readAsArrayBuffer(file);
+    }
+    // CSV
+    else if (
+      type === "text/csv" ||
+      type === "application/csv" ||
+      name.endsWith(".csv")
+    ) {
+      setPreviewType("excel"); // Reuse the same table preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const csvData = e.target.result;
+        const workbook = XLSX.read(csvData, { type: "string" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        setSheetData(jsonData);
+      };
+      reader.readAsText(file);
     }
     // OTHER
     else {
@@ -91,7 +106,6 @@ function FileRenderPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Filename */}
             <p className="text-sm text-gray-300 break-all">
               <strong>File:</strong> {file.name}
             </p>
@@ -116,7 +130,7 @@ function FileRenderPage() {
               />
             )}
 
-            {/* Excel Preview */}
+            {/* Excel/CSV Preview */}
             {previewType === "excel" && (
               <div className="overflow-auto max-h-[30rem] bg-gray-100 rounded p-4 text-gray-800">
                 <table className="min-w-full text-sm">

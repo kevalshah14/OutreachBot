@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Keval Shah <keval.arhan@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.8"
+google-genai = "^1.2.0"
+uvicorn = "^0.34.0"
+pandas = "^2.2.3"
+requests = "^2.32.3"
+beautifulsoup4 = "^4.13.3"
+selenium = "^4.29.0"
+webdriver-manager = "^4.0.2"
+undetected-chromedriver = "^3.5.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
